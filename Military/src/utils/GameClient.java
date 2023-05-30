@@ -16,13 +16,15 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import utils.Cell.cellType;
 
 public class GameClient extends JPanel implements KeyListener{
 	
-	Boolean start,death;
+	boolean start,death;
 	Board clientboard;
 	String code;
 	ArrayList<Integer> data;
@@ -33,8 +35,10 @@ public class GameClient extends JPanel implements KeyListener{
 	JLabel[][] label;
 	JLabel status;
 	int partial;
+	JTextArea text;
 	public static int idCounter;
 	BufferedImage ca,mo,qu,sh,sw,la,ic,ju,cs;
+	BufferedImage KG, CT;
 	BufferedImage[] background;
 	
 	JFrame frame;
@@ -74,8 +78,13 @@ public class GameClient extends JPanel implements KeyListener{
 	
 	protected void paintComponent(Graphics g) {
 //		System.out.println("painted");
-		if(!start)return; 
+		if(!start) {
+			g.drawImage(CT, 400,100,350,450,null);
+			g.drawImage(KG, 100,480,600,300,null);
+			return; 
+		}
 		status.setVisible(false);
+		text.setVisible(false);
 		if(death) {
 			for(int i=0;i<Board.size;i++) for(int j=0;j<Board.size;j++)label[i][j].setVisible(false);
 			status.setVisible(true);
@@ -149,13 +158,19 @@ public class GameClient extends JPanel implements KeyListener{
 				//label[i][j].setAlignmentY(SwingConstants.CENTER);
 			}
 		}
-		font = new Font("Dialog",Font.PLAIN,Board.size);
+		font = new Font("Dialog",Font.PLAIN,Board.size/2);
 		status=new JLabel("Waiting for other players ...",JLabel.CENTER);
 		frame.add(status);
 		this.add(status);
 		status.setFont(font);
-		status.setBounds(0, 0, Board.size*20, Board.size*20);
+		status.setBounds(0, 0, Board.size*20, Board.size*2);
 		status.setVisible(true);
+		text = new JTextArea();
+		text.setText("Welcome to the game \"Military\"!\n" + "This game is a remake of the existing game\ngenerals.io , with a bunch of additional features added. \nThe goal of the game is to mobilize your troops and \ncapture other players' queens. Every turn, you may \nmove your army by 1 unit, and some cells will recruit \nnew army for you. For details, see below.");
+		frame.add(text);
+		this.add(text);
+		text.setBounds(50,100,350,350);
+		
 		
 		background = new BufferedImage[15];
 		
@@ -169,7 +184,9 @@ public class GameClient extends JPanel implements KeyListener{
 			ic = ImageIO.read(new File("Ice.png"));
 			ju = ImageIO.read(new File("Jungle.png"));
 			cs = ImageIO.read(new File("cursor.png"));
-			
+
+			KG=ImageIO.read(new File("Keyboard Guide.jpeg"));
+			CT=ImageIO.read(new File("Cell Types.jpg"));
 			for(int i=1;i<=12;i++) {
 				background[i] = ImageIO.read(new File("Player_"+i+".png"));
 			}
